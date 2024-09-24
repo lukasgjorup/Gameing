@@ -14,17 +14,19 @@ public class Gamepanel extends JPanel implements Runnable {
     Thread gameThread;
     Camera camera;
     KeyHandler keyHandler;
+    Update update;
 
     public Gamepanel() {
         map = new Map();
         player = new Player(map.getScreenHeight() /2, map.getScreenWidth() /2);
-        camera = new Camera(map,player,this);
+        camera = new Camera(map,player,this,map);
+        update = new Update();
         this.setPreferredSize(new Dimension(map.getScreenWidth(), map.getScreenHeight()));
         this.setDoubleBuffered(true);
 
 
         // Initialize the KeyHandler
-        keyHandler = new KeyHandler(player);
+        keyHandler = new KeyHandler();
         this.addKeyListener(keyHandler); // Add KeyHandler as a key listener
         this.setFocusable(true);         // Make sure the panel can focus on keyboard events
         this.requestFocusInWindow();     // Request focus to ensure the panel is focused when displayed
@@ -88,14 +90,12 @@ public class Gamepanel extends JPanel implements Runnable {
         draw.draw(g2d,camera,player);
 
 
-
-
-
-
         g2d.dispose();
     }
 
     public void update(){
+
+        update.updateGame(player,camera,map);
 
 
     }

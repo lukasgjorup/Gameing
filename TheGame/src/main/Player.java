@@ -5,9 +5,9 @@ public class Player {
     // Player attributes
     private int x, y; // Position of the player
     private int width, height; // Size of the player
-    private float speed; // Player movement speed
+    private int speed; // Player movement speed
 
-    public boolean movingUp,movingDown, movingLeft, movingRight;
+    public static boolean movingUp,movingDown, movingLeft, movingRight;
 
 
     public Player(int x, int y) {
@@ -15,7 +15,7 @@ public class Player {
         this.y = y;
         this.width = 50; // Example player width
         this.height = 50; // Example player height
-        this.speed = 5.0f; // Example player speed
+        this.speed = 5; // Example player speed
     }
 
     // Method to update the player's position
