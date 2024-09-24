@@ -1,0 +1,105 @@
+package main;
+
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Gamepanel extends JPanel implements Runnable {
+    private final int FPS = 60;
+    private final long targetTime = 1000 / FPS; // Target time for each frame in milliseconds
+
+    Player player;
+    Map map;
+    Draw draw;
+    Thread gameThread;
+    Camera camera;
+    KeyHandler keyHandler;
+
+    public Gamepanel() {
+        map = new Map();
+        player = new Player(map.getScreenHeight() /2, map.getScreenWidth() /2);
+        camera = new Camera(map,player,this);
+        this.setPreferredSize(new Dimension(map.getScreenWidth(), map.getScreenHeight()));
+        this.setDoubleBuffered(true);
+
+
+        // Initialize the KeyHandler
+        keyHandler = new KeyHandler(player);
+        this.addKeyListener(keyHandler); // Add KeyHandler as a key listener
+        this.setFocusable(true);         // Make sure the panel can focus on keyboard events
+        this.requestFocusInWindow();     // Request focus to ensure the panel is focused when displayed
+
+
+
+        draw = new Draw(map.tileSize);
+    }
+
+    public void startGameThread(){
+        gameThread = new Thread(this);
+        gameThread.start();
+        this.requestFocusInWindow();
+
+    }
+
+    @Override
+    public void run() {
+        long startTime;
+        long elapsedTime;
+        long waitTime;
+
+        while (gameThread.isAlive()) {
+            startTime = System.nanoTime();
+
+            // Update game state and render
+            update();
+            repaint();
+
+
+
+            // Calculate the time it took to update and render
+            elapsedTime = (System.nanoTime() - startTime) / 1_000_000; // Convert nanoseconds to milliseconds
+
+            // Calculate how much time to wait to maintain consistent FPS
+            waitTime = targetTime - elapsedTime;
+
+
+            // testing how long left System.out.println(waitTime);
+            // Sleep for the remaining time to achieve the target FPS
+            if (waitTime > 0) {
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // If the game is running too slow, don't sleep (but log if necessary)
+            else {
+                System.out.println("Frame took longer than expected!");
+                //we need it to adjust if it takes longer and report it.
+            }
+        }
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);//delete everything from last drawing.
+        Graphics2D g2d = (Graphics2D) g;
+
+        draw.draw(g2d,camera,player);
+
+
+
+
+
+
+        g2d.dispose();
+    }
+
+    public void update(){
+
+
+    }
+
+
+
+}
