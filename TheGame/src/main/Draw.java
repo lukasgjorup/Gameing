@@ -13,7 +13,6 @@ public class Draw {
     }
 
     public void draw(Graphics2D g2d, Camera camera, Player player) {
-        g2d.setColor(Color.BLACK);
         // Drawing logic moved from GamePanel
         camera.translate(g2d);
         g2d.setColor(Color.RED);
