@@ -1,8 +1,11 @@
 package main;
 
 
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class Gamepanel extends JPanel implements Runnable {
     private final int FPS = 60;
@@ -16,7 +19,7 @@ public class Gamepanel extends JPanel implements Runnable {
     KeyHandler keyHandler;
     Update update;
 
-    public Gamepanel() {
+    public Gamepanel() throws IOException {
         map = new Map();
         player = new Player(map.getScreenHeight() /2, map.getScreenWidth() /2);
         camera = new Camera(map,player,this,map);
