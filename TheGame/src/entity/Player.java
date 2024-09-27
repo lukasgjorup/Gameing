@@ -54,7 +54,6 @@ public class Player extends Entity {
             if(spriteNumber>6)spriteNumber=1;
             if(spriteCounter>1000)spriteCounter=0;
         }
-
         }
     }
 
