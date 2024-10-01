@@ -1,6 +1,8 @@
 package main;
 
 
+import Tile.TileManeger;
+import entity.EnemyManeger;
 import entity.Player;
 
 import javax.swing.*;
@@ -18,12 +20,16 @@ public class Gamepanel extends JPanel implements Runnable {
     Camera camera;
     KeyHandler keyHandler;
     Update update;
+    TileManeger tileManeger;
+    EnemyManeger enemyManeger;
 
     public Gamepanel() throws IOException {
         map = new Map();
-        player = new Player(map.getScreenHeight() /2, map.getScreenWidth() /2);
+        player = new Player((TileManeger.maxX/2)*map.tileSize, (tileManeger.maxY/2)*map.tileSize);
         camera = new Camera(map,player,this,map);
         update = new Update();
+        tileManeger = new TileManeger(this, map);
+        enemyManeger = new EnemyManeger(map.getTileSize());
         this.setPreferredSize(new Dimension(map.getScreenWidth(), map.getScreenHeight()));
         this.setDoubleBuffered(true);
 
@@ -90,15 +96,13 @@ public class Gamepanel extends JPanel implements Runnable {
         super.paintComponent(g);//delete everything from last drawing.
         Graphics2D g2d = (Graphics2D) g;
 
-        draw.draw(g2d,camera,player);
-
+        draw.draw(g2d,camera,player,tileManeger,enemyManeger);
 
         g2d.dispose();
     }
 
     public void update(){
-
-        update.updateGame(player,camera,map);
+        update.updateGame(player,camera,map,enemyManeger);
 
 
     }

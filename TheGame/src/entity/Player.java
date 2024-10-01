@@ -21,8 +21,8 @@ public class Player extends Entity {
     public Player(int x, int y) throws IOException {
         this.x = x;
         this.y = y;
-        this.width = 50; // Example player width
-        this.height = 50; // Example player height
+        this.width = 64; // Example player width
+        this.height = 64; // Example player height
         this.speed = 5; // Example player speed
         getPlayerImage();
         direction = "down";

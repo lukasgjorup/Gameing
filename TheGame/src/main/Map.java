@@ -1,10 +1,10 @@
 package main;
 
 public class Map {
-    final int OriginalSize = 32; // this is how detailed stuff is
-    final int scale = 2;  //it's a multiplyer to scale our 2D art
+    static final int OriginalSize = 32; // this is how detailed stuff is
+    static final int scale = 2;  //it's a multiplyer to scale our 2D art
 
-    final int tileSize = OriginalSize * scale; // making 128 tiles.
+    final static int tileSize = OriginalSize * scale; // making 128 tiles.
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
 
@@ -14,6 +14,13 @@ public class Map {
     Map(){
 
 
+    }
+
+    public int getMaxScreenCol() {
+        return maxScreenCol;
+    }
+    public int getMaxScreenRow() {
+        return maxScreenRow;
     }
 
 

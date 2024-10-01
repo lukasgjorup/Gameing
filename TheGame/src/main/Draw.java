@@ -1,5 +1,7 @@
 package main;
 
+import Tile.TileManeger;
+import entity.EnemyManeger;
 import entity.Player;
 
 import java.awt.*;
@@ -12,14 +14,13 @@ public class Draw {
         this.tileSize = tileSize;
     }
 
-    public void draw(Graphics2D g2d, Camera camera, Player player) {
+    public void draw(Graphics2D g2d, Camera camera, Player player, TileManeger tileManeger,EnemyManeger enemyManeger) {
         // Drawing logic moved from GamePanel
         camera.translate(g2d);
-        g2d.setColor(Color.RED);
-        g2d.fillRect(tileSize * 6, tileSize * 6, tileSize, tileSize);
-
-
+        tileManeger.draw(g2d, player);
+        EnemyManeger.draw(g2d);
         player.draw(g2d, camera, player);
+
     }
 
 
