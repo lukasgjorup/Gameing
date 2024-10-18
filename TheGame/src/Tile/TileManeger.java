@@ -70,9 +70,7 @@ public class TileManeger {
             }
         }
 
-
-
-        //make map smooth
+        //make map edge
         int[][] directions = {
                 {-1, -1, 1}, // top-left -> water1
                 {0, -1, 2}, // top -> water2
@@ -229,37 +227,54 @@ public class TileManeger {
 
     }
 
-    public void draw(Graphics2D g2, Player p) {
-        int tileSize = map.getTileSize();
-
-
-        // Player's tile index on the map
-        int playerTileX = findTile(p.getX(), tileSize);
-        int playerTileY = findTile(p.getY(), tileSize);
-
-        // Player's offset within the current tile
-        int offsetX = p.getX() % tileSize;
-        int offsetY = p.getY() % tileSize;
-
-        // Adjust screen position so that the player appears to move smoothly within the tile
-        for (int i = (-map.getMaxScreenCol()/2)-1; i <= map.getMaxScreenCol()/2+1; i++) {
-            for (int j = -(map.getMaxScreenRow()/2)-1; j <= map.getMaxScreenRow()/2+1; j++) {
-                int tileX = playerTileX + i;
-                int tileY = playerTileY + j;
-
-                // Only draw if the tile is within bounds
-                if (tileX >= 0 && tileX < maxX-1 && tileY >= 0 && tileY < maxY-1) {
-                    // Calculate where to draw the tile relative to the player's position and screen offset
-                    int drawX = (i * tileSize) - offsetX + p.getX();
-                    int drawY = (j * tileSize) - offsetY + p.getY();
-
-                    g2.drawImage(tile[tileX][tileY].image, drawX, drawY, tileSize, tileSize, null);
-
+    public void StoneReplacer(){
+        int radius2 = (int)(((double) Math.min(maxX, maxY) /2)*0.25);
+        for (int x = 0; x < maxX; x++) {
+            for (int y = 0; y < maxY; y++) {
+                int distance = (int) Math.sqrt(Math.pow(x - (double) maxX /2, 2) + Math.pow(y - (double) maxY /2, 2));
+                if(distance < radius2+3){
+                    if (tile[x][y].image == stoneImage) {
+                        //place stone
+                    }
                 }
             }
         }
     }
 
+    public void draw(Graphics2D g2, Player p) {
+        int playerX = p.getX();
+        int playerY = p.getY();
+
+        int tileSize = map.getTileSize();
+
+        int playerTileX = findTile(p.getX(), tileSize);
+        int playerTileY = findTile(p.getY(), tileSize);
+
+        // Player's tile index on the map
+
+        // Player's offset within the current tile
+        int offsetX = playerX % tileSize;
+        int offsetY = playerY % tileSize;
+
+        // Adjust screen position so that the player appears to move smoothly within the tile
+        for (int i = (-map.getMaxScreenCol() / 2) - 1; i <= map.getMaxScreenCol() / 2 + 1; i++) {
+            for (int j = -(map.getMaxScreenRow() / 2) - 1; j <= map.getMaxScreenRow() / 2 + 1; j++) {
+                int tileX = playerTileX + i;
+                int tileY = playerTileY + j;
+
+                // Only draw if the tile is within bounds
+                if (tileX >= 0 && tileX < maxX - 1 && tileY >= 0 && tileY < maxY - 1) {
+                    // Calculate where to draw the tile relative to the player's position and screen offset
+                    int drawX = (i * tileSize) - offsetX + playerX;
+                    int drawY = (j * tileSize) - offsetY + playerY;
+
+
+                    // Adjust tile size by 1 pixel to prevent gaps
+                    g2.drawImage(tile[tileX][tileY].image, drawX, drawY, tileSize + 1, tileSize + 1, null);
+                }
+            }
+        }
+    }
     public void stupThing(){
 
 

@@ -2,6 +2,7 @@ package main;
 
 
 import Tile.TileManeger;
+import entity.DamageNumberManeger;
 import entity.EnemyManeger;
 import entity.Player;
 
@@ -22,6 +23,7 @@ public class Gamepanel extends JPanel implements Runnable {
     Update update;
     TileManeger tileManeger;
     EnemyManeger enemyManeger;
+    DamageNumberManeger damageNumberManeger;
 
     public Gamepanel() throws IOException {
         map = new Map();
@@ -29,7 +31,8 @@ public class Gamepanel extends JPanel implements Runnable {
         camera = new Camera(map,player,this,map);
         update = new Update();
         tileManeger = new TileManeger(this, map);
-        enemyManeger = new EnemyManeger(map.getTileSize());
+        enemyManeger = new EnemyManeger(map.getTileSize(),player);
+        damageNumberManeger = new DamageNumberManeger();
         this.setPreferredSize(new Dimension(map.getScreenWidth(), map.getScreenHeight()));
         this.setDoubleBuffered(true);
 
@@ -62,7 +65,11 @@ public class Gamepanel extends JPanel implements Runnable {
             startTime = System.nanoTime();
 
             // Update game state and render
-            update();
+            try {
+                update();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             repaint();
 
 
@@ -96,17 +103,20 @@ public class Gamepanel extends JPanel implements Runnable {
         super.paintComponent(g);//delete everything from last drawing.
         Graphics2D g2d = (Graphics2D) g;
 
-        draw.draw(g2d,camera,player,tileManeger,enemyManeger);
+        try {
+            draw.draw(g2d,camera,player,tileManeger,enemyManeger);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         g2d.dispose();
     }
 
-    public void update(){
-        update.updateGame(player,camera,map,enemyManeger);
+    public void update() throws IOException {
+        update.updateGame(player,camera,map,enemyManeger,damageNumberManeger);
 
 
     }
-
 
 
 }

@@ -8,41 +8,57 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Random;
 
 public class EnemySlime {
-
     private int x;
     private int y;
+
     private int health;
     private int speed;
     private int damage;
-    private final int width = 32;
-    private final int height = 32;
+    public final int width = 64;
+    public final int height = 64;
+    private BufferedImage[] walkingImagesL = new BufferedImage[3];
+    private BufferedImage[] walkingImagesR= new BufferedImage[3];
+    private BufferedImage[] attackImages = new BufferedImage[5];
+    public int spriteCounter = 0;
+    public int spriteNumber = 0;
+    public int spriteNumber1 = 0;
+    private Player player;
+    public boolean attackNumber = false;
+    private boolean inMiddleOfAttack = false;
+    private int attackRange = 128;
 
-
-    public BufferedImage walk1, walk2, walk3, attack1, attack2, attack3, attack4, attack5;
     public BufferedImage image;
-    public EnemySlime(int tileSize) throws IOException {
-        this.x = (TileManeger.maxX/2)*tileSize +1;
-        this.y = (TileManeger.maxY/2)*tileSize +1;
+
+    public EnemySlime(int tileSize, Player player) throws IOException {
+        Random random = new Random();
+        this.x = (TileManeger.maxX/2-15)*tileSize +random.nextInt(31)*tileSize;
+        this.y = (TileManeger.maxY/2-15)*tileSize +random.nextInt(31)*tileSize;
         this.health = 10;
         this.speed = 3;
         this.damage = 1;
         getSpriteImage();
+        this.player = player;
 
     }
 
 
     public void getSpriteImage() throws IOException {
-        walk1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        walk2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        walk3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        attack1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        attack2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        attack3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        attack4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        attack5 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        image = walk1;
+        walkingImagesL[0] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SLIMEMOVELEFT1.png")));
+        walkingImagesL[1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SLIMEMOVELEFT2.png")));
+        walkingImagesL[2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SLIMEMOVELEFT3.png")));
+        walkingImagesR[0] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SLIMEMOVERIGHT1.png")));
+        walkingImagesR[1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SLIMEMOVERIGHT2.png")));
+        walkingImagesR[2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SLIMEMOVERIGHT3.png")));
+        attackImages[0] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SlimeAttack1.png")));
+        attackImages[1] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SlimeAttack2.png")));
+        attackImages[2] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SlimeAttack3.png")));
+        attackImages[3] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SlimeAttack4.png")));
+        attackImages[4] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Slime/SlimeAttack5.png")));
+
+        image =walkingImagesL[0];
     }
 
     public int getX() {
@@ -70,23 +86,85 @@ public class EnemySlime {
         this.speed = speed;
     }
 
-    public void movementE(Player player){
+    public boolean takeDamage() {
+        attackNumber = true;
+        this.health -= player.damage;
+        if(this.health <= 0) {
+            return true;
+        }
+        return false;
+    }
 
-        int dx = player.getX() - this.x;
-        int dy = player.getY() - this.y;
+    public void movementE(Player player){
+        int pX = player.getX();
+        int pY = player.getY();
+
+        int dx = pX - this.x;
+        int dy = pY - this.y;
+
+
 
         double distance = Math.sqrt(dx*dx + dy*dy);
 
-        double moveX = dx / distance;
-        double moveY = dy / distance;
 
-        this.x = this.x + (int)(moveX * this.speed);
-        this.y = this.y + (int)(moveY * this.speed);
+        if(distance>50 && distance<300 && !inMiddleOfAttack) {
+
+            if(dx>0){
+                image = walkingImagesR[spriteNumber];
+            }else{
+                image = walkingImagesL[spriteNumber];
+            }
+
+            double moveX = dx / distance;
+            double moveY = dy / distance;
+
+
+            this.x = this.x + (int) (moveX * this.speed);
+            this.y = this.y + (int) (moveY * this.speed);
+
+            spriteCounter++;
+            if (spriteCounter % 10 == 0) {
+                spriteNumber++;
+                if (spriteNumber > 2) spriteNumber = 0;
+                if (spriteCounter > 1000) spriteCounter = 0;
+            }
+        }else if (distance<=50 || inMiddleOfAttack){
+            inMiddleOfAttack = true;
+
+            image = attackImages[spriteNumber1];
+
+            spriteCounter++;
+            if (spriteCounter % 10 == 0) {
+                spriteNumber1++;
+                if (spriteNumber1 > 4) {
+                    spriteNumber1 = 0;
+                    inMiddleOfAttack = false;
+                }
+                if (spriteCounter > 1000) spriteCounter = 0;
+            }
+        }else{
+            image = walkingImagesR[0];
+        }
+
     }
 
+
+
+
     public void draw(Graphics2D g2d){
-        g2d.setColor(Color.red);
-        g2d.fillRect(x, y, width, height);
+        if(Math.abs(player.getX()-this.x) < 64*9 && Math.abs(player.getY()-this.y) < 64*9){
+            g2d.drawImage(image, x, y, this.width, this.height, null);
+        }
+    }
+
+    public void slimeAttack(Graphics2D g2d){
+        if (inMiddleOfAttack && spriteNumber1 != 4){
+            g2d.setColor(Color.blue);
+            g2d.drawRect(this.x - this.height / 2, this.y - this.width / 2, attackRange, attackRange);
+        }else if(inMiddleOfAttack){
+            g2d.setColor(Color.blue);
+            g2d.fillRect(this.x - this.height / 2, this.y - this.width / 2, attackRange, attackRange);
+        }
     }
 
 

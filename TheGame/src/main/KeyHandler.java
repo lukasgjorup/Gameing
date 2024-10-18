@@ -32,6 +32,9 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_D) {
             Player.movingRight = true;
         }
+        if (code == KeyEvent.VK_SPACE) {
+            Player.attacking = true;
+        }
     }
 
     @Override

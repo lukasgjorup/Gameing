@@ -13,9 +13,9 @@ public class Player extends Entity {
     // Player attributes
 
     private int width, height; // Size of the player
-
-
-    public static boolean movingUp,movingDown, movingLeft, movingRight;
+    private int attackX, attackY;
+    public int damage;
+    public static boolean movingUp,movingDown, movingLeft, movingRight, attacking;
 
 
     public Player(int x, int y) throws IOException {
@@ -24,105 +24,215 @@ public class Player extends Entity {
         this.width = 64; // Example player width
         this.height = 64; // Example player height
         this.speed = 5; // Example player speed
+        this.damage = 2;
         getPlayerImage();
         direction = "down";
     }
 
     // Method to update the player's position
     public void update() {
-        if(movingUp || movingDown || movingLeft || movingRight){
-        if (movingUp) {
-            direction = "up";
-            y -= speed;
-        }
-        if (movingDown) {
-            direction = "down";
-            y += speed;
-        }
-        if (movingLeft) {
-            direction = "left";
-            x -= speed;
-        }
-        if (movingRight) {
-            direction = "right";
-            x += speed;
-        }
+        if(!attacking) {
+            if (movingUp || movingDown || movingLeft || movingRight) {
+                if (movingUp) {
+                    direction = "up";
+                    y -= speed;
+                }
+                if (movingDown) {
+                    direction = "down";
+                    y += speed;
+                }
+                if (movingLeft) {
+                    direction = "left";
+                    x -= speed;
+                }
+                if (movingRight) {
+                    direction = "right";
+                    x += speed;
+                }
 
-        spriteCounter++;
-        if(spriteCounter%10==0){
-            spriteNumber++;
-            if(spriteNumber>6)spriteNumber=1;
-            if(spriteCounter>1000)spriteCounter=0;
-        }
+                spriteCounter++;
+                if (spriteCounter % 10 == 0) {
+                    spriteNumber++;
+                    if (spriteNumber > 2) spriteNumber = 1;
+                    if (spriteCounter > 1000) spriteCounter = 0;
+                }
+            }
         }
     }
 
     public void getPlayerImage() throws IOException {
-        up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back1.png")));
-        up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back2.png")));
-        up3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back3.png")));
-        up4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back4.png")));
-        up5 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back5.png")));
-        up6 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 back6.png")));
-        right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking right1.png")));
-        right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking right2.png")));
-        right3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking right3.png")));
-        right4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking right4.png")));
-        right5 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking right5.png")));
-        right6 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking right6.png")));
-        left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking Left1.png")));
-        left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking Left2.png")));
-        left3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking Left3.png")));
-        left4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking Left4.png")));
-        left5 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking Left5.png")));
-        left6 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 Looking Left6.png")));
-        down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 forward1.png")));
-        down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 forward2.png")));
-        down3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 forward3.png")));
-        down4 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 forward4.png")));
-        down5 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 forward5.png")));
-        down6 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/Sprite-0002 forward6.png")));
+        up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogB1.png")));
+        up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogB2.png")));
+        up3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogB3.png")));
+        right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogR1.png")));
+        right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogR2.png")));
+        right3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogR3.png")));
+        left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogL1.png")));
+        left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogL2.png")));
+        left3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogL3.png")));
+        down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogFstand.png")));
+        down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogFwalk1.png")));
+        down3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogFwalk2.png")));
+        upAttack[0] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackB2.png")));
+        upAttack[1] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackB3.png")));
+        upAttack[2] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackB4.png")));
+        rightAttack[0] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackR2.png")));
+        rightAttack[1] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackR3.png")));
+        rightAttack[2] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackR4.png")));
+        leftAttack[0] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackL2.png")));
+        leftAttack[1] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackL3.png")));
+        leftAttack[2] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackL4.png")));
+        downAttack[0] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackF2.png")));
+        downAttack[1] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackF3.png")));
+        downAttack[2] =ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/FrogattackF4.png")));
     }
 
     public void draw(Graphics2D g2d, Camera camera, Player player){
 
         BufferedImage image = null;
         // Arrays for each direction's sprites
-        BufferedImage[] upSprites = {up1, up2, up3, up4, up5, up6};
-        BufferedImage[] downSprites = {down1, down2, down3, down4, down5, down6};
-        BufferedImage[] leftSprites = {left1, left2, left3, left4, left5, left6};
-        BufferedImage[] rightSprites = {right1, right2, right3, right4, right5, right6};
+        BufferedImage[] upSprites = {up1, up2, up3};
+        BufferedImage[] downSprites = {down1, down2, down3};
+        BufferedImage[] leftSprites = {left1, left2, left3};
+        BufferedImage[] rightSprites = {right1, right2, right3};
 
         BufferedImage[] selectedSprites = null;
 
-// Select the appropriate sprite array based on direction
+
+        // Select the appropriate sprite array based on direction
         switch (direction) {
             case "up":
-                selectedSprites = upSprites;
+                if(attacking)selectedSprites=upAttack;
+                else selectedSprites=upSprites;
                 break;
             case "down":
-                selectedSprites = downSprites;
+                if(attacking)selectedSprites=downAttack;
+                else selectedSprites=downSprites;
+
                 break;
             case "left":
-                selectedSprites = leftSprites;
+                if(attacking)selectedSprites=leftAttack;
+                else selectedSprites = leftSprites;
                 break;
             case "right":
-                selectedSprites = rightSprites;
+                if(attacking)selectedSprites=rightAttack;
+                else selectedSprites = rightSprites;
                 break;
         }
 
-      if(!movingUp && !movingDown && !movingLeft && !movingRight){
+      if(!movingUp && !movingDown && !movingLeft && !movingRight && !attacking){
           if (selectedSprites != null){
               image =selectedSprites[0];
           }
       }else{
-          if (selectedSprites != null && spriteNumber >= 1 && spriteNumber <= selectedSprites.length) {
-              image = selectedSprites[spriteNumber - 1];
+          if (selectedSprites != null && spriteNumber >= 0 && spriteNumber <= selectedSprites.length) {
+              image = selectedSprites[spriteNumber];
               g2d.drawImage(image, x, y, this.width, this.height, null);
           }
       }
         g2d.drawImage(image, x, y, this.width, this.height, null);
     }
+
+    public void attacking(Graphics2D g2d) throws IOException {
+        if (attacking) {
+            if (attackStage == 0) {
+                sx = this.x;
+                sy = this.y;  // Initialize attack position only once at the start
+                spriteNumber = 0;
+            }
+
+            // Store the initial position before modifying it
+            int resetX = sx;
+            int resetY = sy;
+
+            atackAdding(g2d);  // Modify sx, sy based on the direction
+
+            if(attackStage == 3 || attackStage == 4){
+                g2d.setColor(Color.red);
+                g2d.fillRect(sx, sy, attackRangeX, attackRangeY);
+            }else{
+                g2d.setColor(Color.red);
+                g2d.drawRect(sx, sy,attackRangeX ,attackRangeY );
+            }
+
+
+            //dmgChecker();  // Check if any enemies are hit
+            if(attackStage != 0 && attackStage%4==0)spriteNumber++;
+            // Reset sx, sy back to initial values
+            sx = resetX;
+            sy = resetY;
+            attackStage++;
+
+            if (attackStage == 12) {
+                spriteNumber = 0;
+                attacking = false;
+                attackStage = 0;
+            }
+        }
+    }
+
+    public void dmgChecker(Graphics2D g2d) throws IOException {
+            for (int i = 0; i < EnemyManeger.slimesCount; i++) {
+                if(EnemyManeger.slimes[i] != null){
+                int enemyStartX = EnemyManeger.slimes[i].getX();
+                int enemyEndX = EnemyManeger.slimes[i].getX()+EnemyManeger.slimes[i].height;
+                int enemyStartY = EnemyManeger.slimes[i].getY()+EnemyManeger.slimes[i].width/2;
+                int enemyEndY = EnemyManeger.slimes[i].getY()+EnemyManeger.slimes[i].width;
+
+                // Define the attack area bounds
+                int attackStartX = RXorY(sx,sx+attackRangeX);
+                int attackEndX = RYorX(sx,sx+attackRangeX);
+                int attackStartY = RXorY(sy,sy+attackRangeY);
+                int attackEndY = RYorX(sy,sy+attackRangeY);
+
+
+
+
+                if ((enemyStartX >= attackStartX && enemyStartX <= attackEndX || enemyEndX >= attackStartX && enemyEndX <= attackEndX)
+                        && (enemyStartY >= attackStartY && enemyStartY <= attackEndY || enemyEndY >= attackStartY && enemyEndY <= attackEndY)) {
+                    boolean deadChecker = EnemyManeger.slimes[i].takeDamage();
+                    DamageNumberManeger.newDamageNumber(EnemyManeger.slimes[i].getX(),EnemyManeger.slimes[i].getY(),this.damage);
+                    if (deadChecker) {
+                        EnemyManeger.deadSlimes[EnemyManeger.deadCount]= i;
+                        EnemyManeger.deadCount++;
+                        System.out.println("slime died");
+                    }
+                }
+                }
+            }
+    }
+
+    public int RXorY(int a, int b){
+        if(a>b)return b;
+        return a;
+    }
+    public int RYorX(int a, int b){
+        if(a>b)return a;
+        return b;
+    }
+
+    public void atackAdding(Graphics2D g2d) throws IOException {
+        attackRangeX = 64;
+        attackRangeY = 64;
+        switch (direction) {
+            case "up":
+                attackRangeY = 128;
+                sy -= 64;
+                break;
+            case "down":
+                attackRangeY = 128;
+                break;
+            case "left":
+                attackRangeX = 128;
+                sx -= 64;
+                break;
+            case "right":
+                attackRangeX = 128;
+                break;
+        }
+        if(attackStage == 3)dmgChecker(g2d);
+    }
+
 
     public int getWidth() {
         return width;
